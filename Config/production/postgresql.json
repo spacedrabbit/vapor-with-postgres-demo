@@ -1,0 +1,7 @@
+{
+  "host": "ec2-107-20-141-145.compute-1.amazonaws.com",
+  "user": "srfdbfxbhbqraj",
+  "password": "487616f4a8bd3f3c890d677c78eab7b549e26217052f8300fe3d99a0a50f486f",
+  "database": "d5njjb7d999ho9",
+  "port": 5432
+}
