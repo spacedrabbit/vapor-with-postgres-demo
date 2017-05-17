@@ -15,7 +15,7 @@ class Task: NodeRepresentable {
   var title: String!
   
   func makeNode(context: Context) throws -> Node {
-    return try Node(node: ["taskId":self.taskId, "title": self.title])
+    return try Node(node: ["taskid":self.taskId, "title": self.title])
   }
 }
 
@@ -25,7 +25,7 @@ extension Task {
     self.init()
     
     guard
-      let taskId = node["taskID"]?.int,
+      let taskId = node["taskid"]?.int,
       let title = node["title"]?.string
     else {
         return nil

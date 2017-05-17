@@ -8,7 +8,7 @@
 
 import Foundation
 import Vapor
-import VaporSQLite
+import VaporPostgreSQL
 import HTTP
 
 // MARK: - Newer Lesson
@@ -24,21 +24,28 @@ final class TaskViewController {
     //  try drop.database?.driver.raw("SELECT * FROM sqlite_master WHERE name ='Tasks' and type='table';")
     //}
     //catch {
-      self.createDB()
+    // self.createDB()
     //}
   }
   
   // TODO: look into the function signature for handler to explain to the class
   func addRoutes(drop: Droplet) {
+    drop.get("version", handler: version)
     drop.get("task", "all", handler: getAll)
     drop.post("task", "new", handler: create)
     drop.put("task", "update", handler: update)
     drop.delete("task", "delete", handler: delete)
+    
+    drop.get("catDB", "make", handler: createKittyDB)
+    drop.post("catDB", "create", handler: insertKitty)
+  }
+  
+  func version(request: Request) throws -> ResponseRepresentable {
+    return try JSON(node: drop.database?.driver.raw("SELECT version()"))
   }
   
   func getAll(request: Request) throws -> ResponseRepresentable {
-    guard let result = try drop.database?.driver.raw("SELECT * FROM Tasks;") else {
-      self.createDB()
+    guard let result = try drop.database?.driver.raw("SELECT * FROM tasks;") else {
       throw Abort.badRequest
     }
     
@@ -53,7 +60,7 @@ final class TaskViewController {
   func create(request: Request) throws -> ResponseRepresentable {
     
     guard
-      //let id = request.json?["id"]?.int, // this is created automatically since it is a unique key
+      let id = request.json?["id"]?.int, // this is created automatically since it is a unique key
       let taskTitle = request.json?["title"]?.string
       else {
         throw Abort.badRequest
@@ -61,7 +68,7 @@ final class TaskViewController {
     
     // TODO: look up this sql syntax
     // TODO: how to make it to autoincrement
-    guard let _ = try drop.database?.driver.raw("INSERT INTO Tasks (title) VALUES (?)", [taskTitle]) else {
+    guard let _ = try drop.database?.driver.raw("INSERT INTO tasks (taskID, title) VALUES (\(id), '\(taskTitle)');") else {
       throw Abort.custom(status: .notAcceptable, message: "Could not insert")
     }
     
@@ -74,7 +81,7 @@ final class TaskViewController {
       let taskTitle = request.json?["title"]?.string
       else { throw Abort.badRequest }
     
-    guard let _ = try drop.database?.driver.raw("UPDATE Tasks SET title = (?) WHERE taskID = (?)", [taskTitle, id]) else {
+    guard let _ = try drop.database?.driver.raw("UPDATE tasks SET title = '\(taskTitle)' WHERE taskID = \(id);") else {
       throw Abort.custom(status: .notAcceptable, message: "Could not update record with ID: \(id)")
     }
     
@@ -87,7 +94,7 @@ final class TaskViewController {
       let id = request.json?["id"]?.int
       else { throw Abort.badRequest }
     
-    guard let record = try drop.database?.driver.raw("SELECT * FROM Tasks WHERE taskID = (?)", [id]) else {
+    guard let record = try drop.database?.driver.raw("SELECT * FROM tasks WHERE taskID = \(id);") else {
       throw Abort.notFound
     }
     
@@ -95,20 +102,61 @@ final class TaskViewController {
       throw Abort.notFound
     }
     
-    guard let _ = try drop.database?.driver.raw("DELETE FROM Tasks WHERE taskID = (?)", [id]) else {
+    guard let _ = try drop.database?.driver.raw("DELETE FROM tasks WHERE taskID = \(id);") else {
       throw Abort.custom(status: .notAcceptable, message: "Could not delete record with ID: \(id)")
     }
     
     return try JSON(node: ["success":true])
   }
   
-  func createDB() {
+  
+  
+  // MARK: - Kitty Requests
+  let cat: String = "cats"
+  func createKittyDB(request: Request) -> ResponseRepresentable {
     do {
-      // this code doesn't actually create the table or enter the catch block for some reason... sooo whatever
-      try drop.database?.driver.raw("CREATE TABLE Tasks (taskID integer PRIMARY KEY, title text NOT NULL)")
+      try drop.database?.driver.raw("CREATE TABLE \(cat) (" +
+                                                        "cat_id integer primary key,\n" +
+                                                        "cat_name text,\n" +
+                                                        "cat_breed text);")
     }
     catch {
-      print("Error making table")
+      return "Error in making kitty DB \(error)"
+    }
+    
+    return "Making kittens"
+  }
+  
+  func insertKitty(request: Request) throws -> ResponseRepresentable {
+    
+    guard
+      let catID = request.json?["cat_id"]?.int,
+      let catName = request.json?["cat_name"]?.string,
+      let catBreed = request.json?["cat_breed"]?.string
+    else {
+        throw Abort.badRequest
+    }
+    
+    return try JSON(node: drop.database?.driver.raw("INSERT INTO \(cat) VALUES (\(catID), '\(catName)', '\(catBreed)');"))
+  }
+  
+  func deleteKittyDB(request: Request) -> ResponseRepresentable {
+    do {
+      try drop.database?.driver.raw("DROP TABLE \(cat)")
+    }
+    catch {
+      return "Error in deleting kittyDB \(error)"
+    }
+    
+    return "Deleted kittyDB"
+  }
+  
+  func createDB() {
+    do {
+      try drop.database?.driver.raw("CREATE TABLE tasks (taskID integer PRIMARY KEY,\ntitle text);")
+    }
+    catch {
+      print("Error making table \(error)")
     }
     
   }

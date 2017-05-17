@@ -8,9 +8,9 @@
       "version": "1.0.0"
     },
     {
-      "package": "CSQLite",
+      "package": "CPostgreSQL",
       "reason": null,
-      "repositoryURL": "https://github.com/vapor/csqlite.git",
+      "repositoryURL": "https://github.com/vapor/cpostgresql.git",
       "version": "1.0.0"
     },
     {
@@ -44,9 +44,9 @@
       "version": "1.4.3"
     },
     {
-      "package": "FluentSQLite",
+      "package": "FluentPostgreSQL",
       "reason": null,
-      "repositoryURL": "https://github.com/vapor/sqlite-driver.git",
+      "repositoryURL": "https://github.com/vapor/postgresql-driver.git",
       "version": "1.1.0"
     },
     {
@@ -92,16 +92,16 @@
       "version": "1.0.1"
     },
     {
+      "package": "PostgreSQL",
+      "reason": null,
+      "repositoryURL": "https://github.com/vapor/postgresql.git",
+      "version": "1.1.0"
+    },
+    {
       "package": "Routing",
       "reason": null,
       "repositoryURL": "https://github.com/vapor/routing.git",
       "version": "1.1.0"
-    },
-    {
-      "package": "SQLite",
-      "reason": null,
-      "repositoryURL": "https://github.com/vapor/sqlite.git",
-      "version": "1.0.2"
     },
     {
       "package": "Socks",
@@ -128,10 +128,10 @@
       "version": "1.5.15"
     },
     {
-      "package": "VaporSQLite",
+      "package": "VaporPostgreSQL",
       "reason": null,
-      "repositoryURL": "https://github.com/vapor/sqlite-provider.git",
-      "version": "1.1.0"
+      "repositoryURL": "https://github.com/vapor/postgresql-provider.git",
+      "version": "1.1.1"
     }
   ],
   "version": 1

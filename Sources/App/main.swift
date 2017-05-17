@@ -1,9 +1,11 @@
 import Vapor
-import VaporSQLite
 import HTTP
+import VaporPostgreSQL
 
 let drop = Droplet()
+
+try drop.addProvider(VaporPostgreSQL.Provider.self)
 let taskController = TaskViewController(drop: drop)
-try drop.addProvider(VaporSQLite.Provider)
+
 
 drop.run()
