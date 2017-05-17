@@ -2,12 +2,8 @@ import Vapor
 
 let drop = Droplet()
 
-drop.get { req in
-    return try drop.view.make("welcome", [
-    	"message": drop.localization[req.lang, "welcome", "title"]
-    ])
+drop.get("welcome") { request in
+  return "Welcome, to this most glorious Heroku deployment"
 }
-
-drop.resource("posts", PostController())
 
 drop.run()
