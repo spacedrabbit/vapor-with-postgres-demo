@@ -1,9 +1,9 @@
 import Vapor
+import VaporSQLite
+import HTTP
 
 let drop = Droplet()
-
-drop.get("welcome") { request in
-  return "Welcome, to this most glorious Heroku deployment"
-}
+let taskController = TaskViewController(drop: drop)
+try drop.addProvider(VaporSQLite.Provider)
 
 drop.run()
