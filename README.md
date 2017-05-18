@@ -1,15 +1,19 @@
-# Basic Template
+### Currently Limited Functionality
 
-A basic vapor template for starting a new Vapor web application. If you're using vapor toolbox, you can use: `vapor new --template=basic`
+Available here: [Deploy Vapor Dammit](https://deployvapordammit.herokuapp.com/)
 
-## 📖 Documentation
+Only accepts `POST` requests to `/catDB/create` with a `JSON` body that matches: 
 
-Visit the Vapor web framework's [documentation](http://docs.vapor.codes) for instructions on how to use this package.
+```
+{
+   "cat_id": <int value>,
+   "cat_name": <string value>,
+   "cat_breed": <string value>
+}
+```
 
-## 💧 Community
+`cat_id` does not autoincrement/generate and is the DB's primary key. You may get an error if attempting to use a low int value. 
 
-Join the welcoming community of fellow Vapor developers in [slack](http://vapor.team).
+### TODO:
 
-## 🔧 Compatibility
-
-This package has been tested on macOS and Ubuntu.
+- Instructions of how this was setup along w/ links to resources used
